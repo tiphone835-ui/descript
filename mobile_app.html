@@ -237,6 +237,48 @@
           </div>
         </div>
 
+        <!-- Documented Diagnoses Card (Interactive Mobile Multimorbidity) -->
+        <div class="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-sm space-y-2">
+          <div class="flex items-center justify-between">
+            <label class="block text-[11px] font-bold text-slate-700 uppercase tracking-wider">
+              Documented Diagnoses
+            </label>
+            <span id="m-diag-count" class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-teal-100 text-teal-800 font-bold">4 Active</span>
+          </div>
+
+          <!-- Active Badges Container -->
+          <div id="m-active-diagnoses" class="flex flex-wrap gap-1 text-[11px] p-2 bg-slate-50 rounded-xl border border-slate-200 min-h-[32px] items-center"></div>
+
+          <!-- Add custom diagnosis input -->
+          <div class="flex gap-1.5">
+            <input type="text" id="m-diag-input" list="m-diagnoses-datalist" placeholder="Add condition (e.g. Parkinson's, Dementia, BPH)..." class="flex-1 px-2.5 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-lg text-slate-800 focus:outline-none focus:ring-1 focus:ring-teal-600" onkeydown="if(event.key==='Enter'){event.preventDefault();addMobileDiagnosis();}">
+            <datalist id="m-diagnoses-datalist">
+              <option value="Hypertension">
+              <option value="Type 2 Diabetes">
+              <option value="CKD Stage 3b">
+              <option value="Recurrent Falls">
+              <option value="Heart Failure">
+              <option value="Parkinson's Disease">
+              <option value="Alzheimer's / Dementia">
+              <option value="BPH (Prostate)">
+              <option value="Osteoarthritis">
+              <option value="Osteoporosis">
+              <option value="COPD / Asthma">
+              <option value="Atrial Fibrillation">
+              <option value="Depression / Anxiety">
+              <option value="Insomnia">
+              <option value="Glaucoma">
+              <option value="GERD / Dyspepsia">
+            </datalist>
+            <button onclick="addMobileDiagnosis()" class="px-2.5 py-1.5 bg-teal-600 text-white rounded-lg text-xs font-bold">
+              + Add
+            </button>
+          </div>
+
+          <!-- Quick Suggestions -->
+          <div class="flex flex-wrap gap-1 pt-1" id="m-quick-diag-pills"></div>
+        </div>
+
         <!-- 3 Input Mode Buttons -->
         <div class="grid grid-cols-3 gap-2">
           <button onclick="openMobileCameraSheet()" class="p-3 rounded-2xl bg-blue-50 border border-blue-200 text-blue-700 font-bold text-xs flex flex-col items-center gap-1 active:scale-95 transition">
@@ -1080,8 +1122,70 @@ Tramadol 50mg for knee pain`;
     }
 
     // Init
+    
+    let mActiveDiagnoses = ["Hypertension", "Type 2 Diabetes", "CKD Stage 3b", "Recurrent Falls"];
+    const M_POPULAR_DIAGS = ["Parkinson's Disease", "Alzheimer's / Dementia", "Heart Failure", "BPH (Prostate)", "Osteoarthritis", "Osteoporosis", "Atrial Fibrillation", "COPD / Asthma"];
+
+    function renderMobileDiagnoses() {
+      const container = document.getElementById('m-active-diagnoses');
+      const badge = document.getElementById('m-diag-count');
+      const quick = document.getElementById('m-quick-diag-pills');
+      if (!container) return;
+
+      container.innerHTML = '';
+      badge.innerText = mActiveDiagnoses.length + ' Active';
+
+      if (mActiveDiagnoses.length === 0) {
+        container.innerHTML = '<span class="text-[11px] text-slate-400 italic">No conditions selected.</span>';
+      } else {
+        mActiveDiagnoses.forEach(diag => {
+          container.innerHTML += `
+            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-white border border-slate-200 text-[10px] font-semibold text-slate-800 shadow-2xs">
+              <span>${diag}</span>
+              <button onclick="removeMobileDiagnosis('${diag}')" class="text-slate-400 hover:text-rose-600 ml-0.5">&times;</button>
+            </span>`;
+        });
+      }
+
+      if (quick) {
+        quick.innerHTML = '';
+        M_POPULAR_DIAGS.forEach(d => {
+          const has = mActiveDiagnoses.includes(d);
+          quick.innerHTML += `
+            <button onclick="toggleMobileQuickDiag('${d}')" class="px-1.5 py-0.5 rounded text-[9px] border transition ${has ? 'bg-teal-600 text-white border-teal-600 font-bold' : 'bg-slate-50 text-slate-600 border-slate-200'}">
+              ${has ? '✓ ' : '+ '}${d.split(' (')[0].split(' / ')[0]}
+            </button>`;
+        });
+      }
+    }
+
+    function addMobileDiagnosis() {
+      const inp = document.getElementById('m-diag-input');
+      const val = inp.value.trim();
+      if (!val) return;
+      if (!mActiveDiagnoses.includes(val)) {
+        mActiveDiagnoses.push(val);
+        renderMobileDiagnoses();
+      }
+      inp.value = '';
+    }
+
+    function removeMobileDiagnosis(d) {
+      mActiveDiagnoses = mActiveDiagnoses.filter(item => item !== d);
+      renderMobileDiagnoses();
+    }
+
+    function toggleMobileQuickDiag(d) {
+      if (mActiveDiagnoses.includes(d)) removeMobileDiagnosis(d);
+      else {
+        mActiveDiagnoses.push(d);
+        renderMobileDiagnoses();
+      }
+    }
+
     window.addEventListener('DOMContentLoaded', () => {
       renderMobileFRIDs();
+      renderMobileDiagnoses();
       renderMobileCheckOptions();
       renderMobileDb();
     });

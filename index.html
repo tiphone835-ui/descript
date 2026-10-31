@@ -494,7 +494,7 @@ Tramadol 50mg SOS"></textarea>
                 </div>
                 
                 <p class="text-xs text-slate-700 leading-relaxed">
-                  Patient <strong class="text-slate-900">Ramesh Chandra (78y Male)</strong> has multiple interacting comorbidities: <strong>Type 2 Diabetes, Stage 3b CKD, Hypertension</strong>, and a documented history of recurrent falls. His current vital signs and blood chemistry reveal extreme physiological fragility:
+                  Patient <strong class="text-slate-900">Ramesh Chandra (78y Male)</strong> has multiple interacting comorbidities: <strong>' + (activeDiagnoses.join(', ') || 'Multiple Chronic Conditions') + '</strong>, and a documented history of recurrent falls. His current vital signs and blood chemistry reveal extreme physiological fragility:
                 </p>
 
                 <!-- Clinical Trigger Grid -->
@@ -1344,6 +1344,100 @@ Tramadol 50mg SOS"></textarea>
     };
 
     // ------------------------------------------
+    // DIAGNOSES & MULTIMORBIDITY MANAGER
+    // ------------------------------------------
+    let activeDiagnoses = [
+      "Hypertension", 
+      "Type 2 Diabetes Mellitus", 
+      "Chronic Kidney Disease (Stage 3b/4)", 
+      "History of Recurrent Falls / Fractures"
+    ];
+
+    const POPULAR_DIAGNOSES = [
+      "Parkinson's Disease",
+      "Alzheimer's Disease / Dementia",
+      "Heart Failure (HFrEF / HFpEF)",
+      "Benign Prostatic Hyperplasia (BPH)",
+      "Osteoarthritis / Chronic Pain",
+      "Osteoporosis / High Fracture Risk",
+      "Atrial Fibrillation",
+      "COPD / Asthma",
+      "Chronic Insomnia",
+      "Peripheral Sensory Neuropathy",
+      "Glaucoma / Low Vision"
+    ];
+
+    function renderDiagnosesManager() {
+      const container = document.getElementById('active-diagnoses-container');
+      const badge = document.getElementById('diag-count-badge');
+      const quickContainer = document.getElementById('quick-diagnoses-pills');
+      if (!container) return;
+
+      container.innerHTML = '';
+      badge.innerText = activeDiagnoses.length + ' Selected';
+
+      if (activeDiagnoses.length === 0) {
+        container.innerHTML = '<span class="text-xs text-slate-400 italic">No conditions added. Type above or click quick-add buttons below.</span>';
+      } else {
+        activeDiagnoses.forEach(diag => {
+          let colorClass = 'bg-slate-100 text-slate-800 border-slate-200';
+          if (diag.includes('Falls') || diag.includes('Parkinson') || diag.includes('Dementia')) {
+            colorClass = 'bg-rose-50 text-rose-800 border-rose-200 font-bold';
+          } else if (diag.includes('Kidney') || diag.includes('Heart') || diag.includes('CKD')) {
+            colorClass = 'bg-amber-50 text-amber-800 border-amber-200 font-bold';
+          }
+          
+          container.innerHTML += `
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg border text-xs ${colorClass}">
+              <span>${diag}</span>
+              <button type="button" onclick="removeDiagnosis('${diag}')" class="text-slate-400 hover:text-rose-600 transition ml-0.5">
+                <i class="fa-solid fa-xmark text-[10px]"></i>
+              </button>
+            </span>`;
+        });
+      }
+
+      // Render Quick Add Pills
+      if (quickContainer) {
+        quickContainer.innerHTML = '';
+        POPULAR_DIAGNOSES.forEach(diag => {
+          const isSelected = activeDiagnoses.includes(diag);
+          quickContainer.innerHTML += `
+            <button type="button" onclick="toggleQuickDiagnosis('${diag}')" class="px-2 py-0.5 rounded-md border text-[11px] transition ${isSelected ? 'bg-teal-600 text-white border-teal-600 font-bold' : 'bg-white hover:bg-teal-50 text-slate-700 border-slate-200'}">
+              ${isSelected ? '✓ ' : '+ '}${diag.split(' (')[0].split(' / ')[0]}
+            </button>`;
+        });
+      }
+    }
+
+    function addCustomDiagnosis() {
+      const input = document.getElementById('custom-diag-input');
+      const val = input.value.trim();
+      if (!val) return;
+      if (!activeDiagnoses.includes(val)) {
+        activeDiagnoses.push(val);
+        renderDiagnosesManager();
+      }
+      input.value = '';
+    }
+
+    function removeDiagnosis(diagName) {
+      activeDiagnoses = activeDiagnoses.filter(d => d !== diagName);
+      renderDiagnosesManager();
+    }
+
+    function toggleQuickDiagnosis(diagName) {
+      if (activeDiagnoses.includes(diagName)) {
+        removeDiagnosis(diagName);
+      } else {
+        activeDiagnoses.push(diagName);
+        renderDiagnosesManager();
+      }
+    }
+
+
+
+    // ------------------------------------------
     // 3. APP INITIALIZATION & NAVIGATION
     // ------------------------------------------
     window.addEventListener('DOMContentLoaded', () => {
@@ -1352,6 +1446,7 @@ Tramadol 50mg SOS"></textarea>
       setTimeout(() => { skipSplash(); }, 1600);
 
       renderFRIDs();
+      renderDiagnosesManager();
       renderInteractionCheckboxes();
       loadDatabase();
 
