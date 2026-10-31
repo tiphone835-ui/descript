@@ -1,0 +1,1090 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Deprescript AI - Native Mobile App Preview</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* iOS & Android System Fonts and Native Feel */
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+    
+    /* Smooth native slide animations */
+    .slide-in {
+      animation: slideIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    @keyframes slideIn {
+      from { transform: translateX(20px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    
+    .sheet-up {
+      animation: sheetUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    @keyframes sheetUp {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+
+    /* Laser scanner animation for OCR */
+    @keyframes scanLaser {
+      0% { top: 10%; opacity: 0.8; }
+      50% { top: 85%; opacity: 1; }
+      100% { top: 10%; opacity: 0.8; }
+    }
+    .laser-line {
+      animation: scanLaser 2.2s infinite ease-in-out;
+    }
+
+    /* Audio wave animation for Voice */
+    @keyframes waveBar {
+      0%, 100% { height: 8px; }
+      50% { height: 36px; }
+    }
+    .wave-bar-1 { animation: waveBar 0.8s infinite ease-in-out 0.1s; }
+    .wave-bar-2 { animation: waveBar 0.8s infinite ease-in-out 0.3s; }
+    .wave-bar-3 { animation: waveBar 0.8s infinite ease-in-out 0.2s; }
+    .wave-bar-4 { animation: waveBar 0.8s infinite ease-in-out 0.4s; }
+    .wave-bar-5 { animation: waveBar 0.8s infinite ease-in-out 0.15s; }
+
+    /* Custom Mobile Scrollbar */
+    .mobile-scroll::-webkit-scrollbar {
+      width: 3px;
+    }
+    .mobile-scroll::-webkit-scrollbar-thumb {
+      background: rgba(148, 163, 184, 0.4);
+      border-radius: 9999px;
+    }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-900 min-h-screen flex items-center justify-center p-0 sm:p-6 antialiased selection:bg-teal-500 selection:text-white">
+
+  <!-- ============================================================== -->
+  <!-- SMARTPHONE DEVICE CHASSIS (SIMULATING IPHONE / ANDROID FLAGSHIP)-->
+  <!-- ============================================================== -->
+  <div id="device-wrapper" class="relative w-full max-w-[412px] h-[100vh] sm:h-[860px] sm:max-h-[92vh] bg-slate-900 sm:rounded-[50px] shadow-2xl sm:border-[10px] sm:border-slate-800 flex flex-col overflow-hidden sm:ring-1 sm:ring-slate-700/50">
+
+    <!-- Device Speaker & Dynamic Island / Notch -->
+    <div class="absolute top-0 inset-x-0 z-50 flex items-center justify-between px-7 pt-3 pb-2 bg-white/90 backdrop-blur-md border-b border-slate-100 text-[11px] font-semibold text-slate-800">
+      <span id="mobile-clock">09:41</span>
+      
+      <!-- Dynamic Island Capsule -->
+      <div class="w-24 h-4.5 bg-black rounded-full flex items-center justify-end px-2 space-x-1 shadow-sm">
+        <div class="w-2 h-2 rounded-full bg-slate-800"></div>
+        <div class="w-1.5 h-1.5 rounded-full bg-teal-500 animate-pulse"></div>
+      </div>
+
+      <div class="flex items-center space-x-1.5 text-xs text-slate-700">
+        <i class="fa-solid fa-signal text-[10px]"></i>
+        <i class="fa-solid fa-wifi text-[10px]"></i>
+        <i class="fa-solid fa-battery-full text-xs text-emerald-600"></i>
+      </div>
+    </div>
+
+    <!-- MAIN SCROLLABLE APP SCREEN CONTAINER -->
+    <div id="mobile-viewport" class="flex-1 bg-slate-50 overflow-y-auto mobile-scroll pt-12 pb-20 relative">
+
+      <!-- ========================================== -->
+      <!-- MOBILE VIEW 1: SPLASH & INTRO MOTION       -->
+      <!-- ========================================== -->
+      <div id="m-splash" class="absolute inset-0 z-40 bg-gradient-to-br from-slate-950 via-teal-950 to-slate-900 flex flex-col items-center justify-center p-6 text-white text-center">
+        <div class="relative flex items-center justify-center mb-6">
+          <div class="w-32 h-32 rounded-full bg-teal-500/20 blur-xl animate-pulse"></div>
+          <div class="w-24 h-24 rounded-3xl bg-gradient-to-tr from-teal-500 to-emerald-400 shadow-xl shadow-teal-500/40 flex items-center justify-center">
+            <i class="fa-solid fa-heart-pulse text-4xl text-white"></i>
+          </div>
+        </div>
+        <h1 class="text-2xl font-black tracking-tight mb-1">DEPRESCRIPT <span class="text-teal-400 font-light">AI</span></h1>
+        <p class="text-teal-200/80 text-xs tracking-wider uppercase mb-8">Clinical Fall-Risk Optimization</p>
+        
+        <div class="w-48 h-1.5 bg-slate-800 rounded-full overflow-hidden mb-3">
+          <div class="h-full bg-teal-400 animate-[pulse_1.5s_infinite] w-full"></div>
+        </div>
+        <span class="text-[10px] text-slate-400 font-mono">Loading 25 FRID Classes...</span>
+
+        <button onclick="dismissMobileSplash()" class="mt-8 px-6 py-2.5 bg-teal-500 hover:bg-teal-400 text-slate-950 font-bold text-xs rounded-full shadow-lg transition">
+          Enter Clinician Portal <i class="fa-solid fa-arrow-right ml-1"></i>
+        </button>
+      </div>
+
+      <!-- ========================================== -->
+      <!-- MOBILE VIEW 2: HOME DASHBOARD              -->
+      <!-- ========================================== -->
+      <div id="tab-content-home" class="p-4 space-y-4 slide-in">
+        
+        <!-- Mobile Header Card -->
+        <div class="flex items-center justify-between pt-1">
+          <div class="flex items-center gap-2.5">
+            <div class="w-9 h-9 rounded-full bg-gradient-to-tr from-teal-600 to-emerald-500 flex items-center justify-center text-white text-sm font-bold shadow-sm">
+              <i class="fa-solid fa-user-doctor"></i>
+            </div>
+            <div>
+              <div class="text-[11px] text-slate-400 uppercase tracking-wider font-semibold">Clinician Active</div>
+              <div class="text-sm font-extrabold text-slate-900">Dr. Sharma, MD</div>
+            </div>
+          </div>
+          <div class="px-2.5 py-1 rounded-full bg-teal-100 text-teal-800 text-[10px] font-bold border border-teal-200">
+            2026 AI Ready
+          </div>
+        </div>
+
+        <!-- Hero Action Card -->
+        <div class="bg-gradient-to-br from-teal-800 via-teal-900 to-slate-900 rounded-2xl p-5 text-white shadow-lg relative overflow-hidden">
+          <div class="relative z-10 space-y-2">
+            <span class="inline-block px-2 py-0.5 rounded bg-teal-500/20 text-teal-200 text-[10px] font-medium border border-teal-400/30">
+              AI Decision Support
+            </span>
+            <h2 class="text-lg font-bold leading-tight">Patient Fall-Risk & Deprescribing Audit</h2>
+            <p class="text-[11px] text-teal-100/80 leading-relaxed">
+              Scan Rx via Camera OCR, dictate voice notes, or paste medications to audit against all 25 FRID classes.
+            </p>
+            <div class="pt-2 flex gap-2">
+              <button onclick="switchMobileTab('audit')" class="flex-1 py-2.5 bg-teal-500 hover:bg-teal-400 text-slate-950 font-bold text-xs rounded-xl shadow transition flex items-center justify-center gap-1.5">
+                <i class="fa-solid fa-wand-magic-sparkles"></i>
+                <span>Start New Audit</span>
+              </button>
+              <button onclick="loadDemoMobilePatient()" class="px-3 py-2.5 bg-white/10 hover:bg-white/20 text-white font-medium text-xs rounded-xl border border-white/20 transition">
+                <i class="fa-solid fa-bolt"></i> Demo
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Metrics Grid -->
+        <div class="grid grid-cols-2 gap-3">
+          <div onclick="switchMobileTab('frids')" class="bg-white p-3.5 rounded-2xl border border-slate-200/80 shadow-sm cursor-pointer active:scale-95 transition">
+            <div class="w-8 h-8 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center mb-2">
+              <i class="fa-solid fa-pills text-sm"></i>
+            </div>
+            <div class="text-base font-extrabold text-slate-900">25 Classes</div>
+            <div class="text-[11px] text-slate-500 font-medium">181 Generic Drugs</div>
+            <div class="text-[10px] text-blue-600 font-bold mt-1">Tap to browse &rarr;</div>
+          </div>
+
+          <div onclick="switchMobileTab('checker')" class="bg-white p-3.5 rounded-2xl border border-slate-200/80 shadow-sm cursor-pointer active:scale-95 transition">
+            <div class="w-8 h-8 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center mb-2">
+              <i class="fa-solid fa-shuffle text-sm"></i>
+            </div>
+            <div class="text-base font-extrabold text-slate-900">Interactions</div>
+            <div class="text-[11px] text-slate-500 font-medium">DDI, DDSI & Food</div>
+            <div class="text-[10px] text-purple-600 font-bold mt-1">Check conflicts &rarr;</div>
+          </div>
+        </div>
+
+        <!-- Indian High-Risk FDC Watch Card -->
+        <div class="bg-amber-50 rounded-2xl p-4 border border-amber-200 text-amber-950 space-y-1.5">
+          <div class="flex items-center justify-between text-xs font-bold text-amber-900">
+            <span class="flex items-center gap-1.5"><i class="fa-solid fa-triangle-exclamation text-amber-600"></i> India FDC Safety Alert</span>
+            <span class="text-[10px] bg-amber-200 px-1.5 py-0.5 rounded text-amber-900 font-mono">Pan-L / Pan-D</span>
+          </div>
+          <p class="text-[11px] text-amber-900/90 leading-relaxed">
+            Combinations containing <strong>Levosulpiride</strong> or <strong>Domperidone</strong> cause acute Drug-Induced Parkinsonism (tremors, shuffling gait, falls) in seniors.
+          </p>
+        </div>
+
+        <!-- Recent Saved Encounters Preview -->
+        <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm space-y-2.5">
+          <div class="flex items-center justify-between">
+            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-700">Recent Patient Audits</h3>
+            <button onclick="switchMobileTab('archive')" class="text-[11px] text-teal-600 font-bold">View All</button>
+          </div>
+          <div id="m-recent-list" class="space-y-2 text-xs">
+            <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-between">
+              <div>
+                <div class="font-bold text-slate-900">Ramesh Chandra (78y)</div>
+                <div class="text-[10px] text-slate-500">Pan-L, Glimepiride, Chlorthalidone</div>
+              </div>
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-100 text-rose-800">Score 8 (HIGH)</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ========================================== -->
+      <!-- MOBILE VIEW 3: AUDIT & DEPRESCRIBING TAB   -->
+      <!-- ========================================== -->
+      <div id="tab-content-audit" class="p-4 space-y-4 hidden slide-in">
+        
+        <div class="flex items-center justify-between">
+          <div>
+            <h2 class="text-lg font-bold text-slate-900">Prescription Audit</h2>
+            <p class="text-[11px] text-slate-500">AI drug extraction, scoring & tapering</p>
+          </div>
+          <button onclick="loadDemoMobilePatient()" class="px-2.5 py-1 bg-teal-50 text-teal-700 border border-teal-200 text-xs font-bold rounded-lg">
+            <i class="fa-solid fa-wand-magic mr-1"></i> Preload Case
+          </button>
+        </div>
+
+        <!-- Patient Mini Bar -->
+        <div class="bg-white p-3 rounded-2xl border border-slate-200 shadow-sm grid grid-cols-3 gap-2 text-center text-xs">
+          <div class="border-r border-slate-100 pr-1">
+            <div class="text-[10px] text-slate-400 uppercase font-semibold">Supine BP</div>
+            <input type="text" id="m-supine" value="142/86" class="w-full text-center font-bold text-slate-800 bg-transparent text-xs">
+          </div>
+          <div class="border-r border-slate-100 px-1">
+            <div class="text-[10px] text-rose-500 uppercase font-semibold">Standing BP</div>
+            <input type="text" id="m-standing" value="114/68" class="w-full text-center font-bold text-rose-600 bg-transparent text-xs">
+          </div>
+          <div class="pl-1">
+            <div class="text-[10px] text-slate-400 uppercase font-semibold">eGFR / Na+</div>
+            <div class="font-bold text-amber-700 text-xs font-mono">31 / 130</div>
+          </div>
+        </div>
+
+        <!-- 3 Input Mode Buttons -->
+        <div class="grid grid-cols-3 gap-2">
+          <button onclick="openMobileCameraSheet()" class="p-3 rounded-2xl bg-blue-50 border border-blue-200 text-blue-700 font-bold text-xs flex flex-col items-center gap-1 active:scale-95 transition">
+            <i class="fa-solid fa-camera text-base"></i>
+            <span>Camera OCR</span>
+          </button>
+          <button onclick="openMobileVoiceSheet()" class="p-3 rounded-2xl bg-rose-50 border border-rose-200 text-rose-700 font-bold text-xs flex flex-col items-center gap-1 active:scale-95 transition">
+            <i class="fa-solid fa-microphone text-base"></i>
+            <span>Voice Dictate</span>
+          </button>
+          <button onclick="document.getElementById('m-rx-text').focus()" class="p-3 rounded-2xl bg-teal-50 border border-teal-200 text-teal-700 font-bold text-xs flex flex-col items-center gap-1 active:scale-95 transition">
+            <i class="fa-solid fa-keyboard text-base"></i>
+            <span>Paste / Edit</span>
+          </button>
+        </div>
+
+        <!-- Text Area for Prescription Input -->
+        <div class="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-sm space-y-2">
+          <label class="block text-[11px] font-bold text-slate-700 uppercase tracking-wider">Current Prescriptions / Brands</label>
+          <textarea id="m-rx-text" rows="4" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-mono focus:ring-2 focus:ring-teal-600 focus:outline-none" placeholder="Enter medicines or use Camera/Voice above. E.g.
+Pan-L 1 cap OD
+Glimepiride 2mg BD
+Chlorthalidone 12.5mg OD
+Alprazolam 0.5mg HS"></textarea>
+          
+          <button onclick="runMobileAudit()" class="w-full py-3 bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 text-white font-extrabold text-xs rounded-xl shadow-md transition flex items-center justify-center gap-1.5">
+            <i class="fa-solid fa-bolt"></i> Run AI Normalization & Audit
+          </button>
+        </div>
+
+        <!-- Audit Results Box -->
+                <!-- Audit Results Box (Detailed Clinical Reasoning Engine) -->
+        <div id="m-results-box" class="space-y-4 hidden">
+          
+          <!-- Score Meter Banner -->
+          <div class="p-4 rounded-2xl bg-gradient-to-r from-rose-500 to-orange-500 text-white shadow-md flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <div class="w-12 h-12 rounded-xl bg-white text-rose-600 font-black text-2xl flex items-center justify-center shadow-inner">
+                <span id="m-score-val">8</span>
+              </div>
+              <div>
+                <div class="text-[10px] uppercase font-bold text-rose-100 tracking-wider">Calculated Fall Risk</div>
+                <div id="m-score-status" class="text-base font-black">HIGH RISK (Action Required)</div>
+              </div>
+            </div>
+            <button onclick="saveMobileEncounter()" class="px-3 py-1.5 bg-white/20 hover:bg-white/30 rounded-xl text-xs font-bold border border-white/30 transition">
+              <i class="fa-solid fa-floppy-disk mr-1"></i> Save
+            </button>
+          </div>
+
+          <!-- SECTION 1: PATIENT CLINICAL STATUS & VULNERABILITY SYNTHESIS -->
+          <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-2.5">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+              <div class="text-xs font-extrabold text-slate-900 flex items-center gap-1.5">
+                <i class="fa-solid fa-user-injured text-teal-600"></i>
+                <span>1. Patient Vulnerability Profile</span>
+              </div>
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-100 text-amber-900 font-bold">5 Active Triggers</span>
+            </div>
+            
+            <div class="text-[11px] text-slate-600 leading-relaxed">
+              <strong class="text-slate-900">Ramesh Chandra (78y Male)</strong> presents with recurrent fall history, Type 2 Diabetes, Hypertension, and Stage 3b Chronic Kidney Disease.
+            </div>
+
+            <!-- Active Trigger Badges -->
+            <div class="grid grid-cols-2 gap-2 text-[10px] font-mono pt-1">
+              <div class="p-2 rounded-xl bg-rose-50 border border-rose-200 text-rose-900">
+                <div class="font-bold">🔻 Postural Drop: &Delta;28 mmHg</div>
+                <div class="text-[9px] text-rose-700">Supine 142 &rarr; Stand 114</div>
+              </div>
+              <div class="p-2 rounded-xl bg-amber-50 border border-amber-200 text-amber-900">
+                <div class="font-bold">🔻 Impaired eGFR: 31 mL/min</div>
+                <div class="text-[9px] text-amber-700">Stage 3b CKD accumulation</div>
+              </div>
+              <div class="p-2 rounded-xl bg-rose-50 border border-rose-200 text-rose-900">
+                <div class="font-bold">🔻 Serum Na+: 130 mEq/L</div>
+                <div class="text-[9px] text-rose-700">Dilutional hyponatremia</div>
+              </div>
+              <div class="p-2 rounded-xl bg-orange-50 border border-orange-200 text-orange-900">
+                <div class="font-bold">🔻 Tight HbA1c: 6.2%</div>
+                <div class="text-[9px] text-orange-700">Severe overtreatment risk</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- SECTION 2: WHY THESE SPECIFIC DRUGS HARM THIS PATIENT -->
+          <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+              <h3 class="text-xs font-extrabold text-slate-900 flex items-center gap-1.5">
+                <i class="fa-solid fa-triangle-exclamation text-rose-600"></i>
+                <span>2. Why This Regimen is Harmful</span>
+              </h3>
+              <span class="text-[10px] text-rose-600 font-bold">Deep Pathology</span>
+            </div>
+            
+            <div id="m-detailed-harms-list" class="space-y-3">
+              <!-- Populated dynamically via JS with deep clinical pathology -->
+            </div>
+          </div>
+
+          <!-- SECTION 3: PRESCRIBING CASCADE DETECTION -->
+          <div id="m-cascade-card" class="p-4 rounded-2xl bg-purple-50 border border-purple-200 text-purple-950 space-y-2">
+            <div class="flex items-center gap-1.5 text-xs font-bold text-purple-900">
+              <i class="fa-solid fa-link text-purple-600"></i> Prescribing Cascade Unmasked
+            </div>
+            <div class="p-2.5 rounded-xl bg-white/90 border border-purple-200 text-[11px] leading-relaxed text-purple-900 font-mono space-y-1">
+              <div>Dyspepsia &rarr; <strong>Pan-L (Levosulpiride)</strong> prescribed</div>
+              <div class="text-rose-600">&darr; Levosulpiride blocks dopamine &rarr; Shuffling gait & tremors</div>
+              <div class="text-amber-700">&darr; Misdiagnosed as "age tremor" &rarr; Accidental fall occurred</div>
+              <div class="text-slate-700">&darr; <strong>Tramadol + Alprazolam</strong> added for pain & sleep anxiety</div>
+            </div>
+            <p class="text-[10px] text-purple-800 leading-tight">
+              <strong>Deprescribing Key:</strong> Ceasing Pan-L removes dopamine blockade at the root, allowing tremors and unsteadiness to reverse within 4–8 weeks.
+            </p>
+          </div>
+
+          <!-- SECTION 4: 4-WEEK DEPRESCRIBING & SUBSTITUTION ROADMAP -->
+          <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+              <h3 class="text-xs font-bold uppercase tracking-wider text-slate-800 flex items-center gap-1.5">
+                <i class="fa-solid fa-calendar-check text-teal-600"></i>
+                <span>3. 4-Week Deprescribing Roadmap</span>
+              </h3>
+              <span class="text-[10px] text-teal-700 font-mono font-bold">Safe Substitutions</span>
+            </div>
+            <div id="m-taper-list" class="space-y-2.5 text-xs"></div>
+          </div>
+
+          <!-- SECTION 5: SICK DAY RULES & RED FLAG SAFETY NET -->
+          <div class="p-4 rounded-2xl bg-amber-50 border border-amber-200 text-amber-950 space-y-2">
+            <div class="flex items-center gap-1.5 text-xs font-bold text-amber-900">
+              <i class="fa-solid fa-shield-virus text-amber-600"></i> "SADMANS" Sick-Day & Dehydration Rules
+            </div>
+            <p class="text-[11px] text-amber-900 leading-relaxed">
+              If the patient experiences fever, diarrhea, vomiting, or extreme heatwave exposure:
+            </p>
+            <ul class="text-[10px] text-amber-950 space-y-1 pl-4 list-disc font-medium">
+              <li><strong>HOLD Chlorthalidone and Telmisartan immediately</strong> to prevent prerenal acute kidney failure and blackout syncope.</li>
+              <li><strong>Hold Glimepiride</strong> if fluid/food intake drops below 50%.</li>
+              <li>Resume only when well-hydrated and oral intake normalizes for > 48 hours.</li>
+            </ul>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- ========================================== -->
+      <!-- MOBILE VIEW 4: ALL 25 FRIDS DRILL-DOWN     -->
+      <!-- ========================================== -->
+      <div id="tab-content-frids" class="p-4 space-y-4 hidden slide-in">
+        <div>
+          <div class="flex items-center justify-between">
+            <h2 class="text-lg font-bold text-slate-900">All 25 FRID Classes</h2>
+            <span class="text-xs font-mono font-bold px-2 py-0.5 rounded-full bg-teal-100 text-teal-800">181 Drugs</span>
+          </div>
+          <p class="text-[11px] text-slate-500">Tap any class to inspect all generic chemical entities</p>
+        </div>
+
+        <div class="relative">
+          <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-400 text-xs"></i>
+          <input type="text" id="m-frid-search" oninput="filterMobileFRIDs()" placeholder="Search class or drug (e.g. Pan-L, Clonazepam)..." class="w-full pl-8 pr-3 py-2 text-xs bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-600">
+        </div>
+
+        <div id="m-frids-list" class="space-y-2.5">
+          <!-- Populated dynamically via JS -->
+        </div>
+      </div>
+
+      <!-- ========================================== -->
+      <!-- MOBILE VIEW 5: MANUAL INTERACTIONS CHECKER -->
+      <!-- ========================================== -->
+      <div id="tab-content-checker" class="p-4 space-y-4 hidden slide-in">
+        <div>
+          <h2 class="text-lg font-bold text-slate-900">Interaction Matrix</h2>
+          <p class="text-[11px] text-slate-500">Cross-check drug pairs, diseases & foods</p>
+        </div>
+
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 space-y-3">
+          <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">Select 2+ Medications to Test</label>
+          <div class="space-y-1.5 text-xs" id="m-check-options"></div>
+          
+          <button onclick="runMobileInteractionsCheck()" class="w-full py-2.5 bg-purple-600 text-white font-bold text-xs rounded-xl shadow transition">
+            Evaluate Selected Combination
+          </button>
+        </div>
+
+        <div id="m-interaction-output" class="space-y-2 hidden"></div>
+      </div>
+
+      <!-- ========================================== -->
+      <!-- MOBILE VIEW 6: ARCHIVE / SAVED DATABASE    -->
+      <!-- ========================================== -->
+      <div id="tab-content-archive" class="p-4 space-y-4 hidden slide-in">
+        <div class="flex items-center justify-between">
+          <div>
+            <h2 class="text-lg font-bold text-slate-900">Patient Encounters</h2>
+            <p class="text-[11px] text-slate-500">Saved clinical audits & follow-up plans</p>
+          </div>
+          <button onclick="clearMobileDb()" class="text-xs text-rose-600 font-semibold">Clear</button>
+        </div>
+
+        <div id="m-db-container" class="space-y-2.5"></div>
+      </div>
+
+    </div>
+
+    <!-- ============================================================== -->
+    <!-- MOBILE BOTTOM NAVIGATION TAB BAR (NATIVE APP FEEL)             -->
+    <!-- ============================================================== -->
+    <nav class="absolute bottom-0 inset-x-0 h-16 bg-white/95 backdrop-blur-lg border-t border-slate-200/80 flex items-center justify-around px-2 z-40">
+      
+      <button onclick="switchMobileTab('home')" id="mtab-home" class="flex flex-col items-center justify-center w-14 h-full text-teal-600 font-bold transition">
+        <i class="fa-solid fa-house text-base"></i>
+        <span class="text-[10px] mt-1 font-medium">Home</span>
+      </button>
+
+      <button onclick="switchMobileTab('audit')" id="mtab-audit" class="flex flex-col items-center justify-center w-14 h-full text-slate-400 hover:text-teal-600 transition">
+        <i class="fa-solid fa-wand-magic-sparkles text-base"></i>
+        <span class="text-[10px] mt-1 font-medium">Audit</span>
+      </button>
+
+      <button onclick="switchMobileTab('frids')" id="mtab-frids" class="flex flex-col items-center justify-center w-14 h-full text-slate-400 hover:text-teal-600 transition">
+        <i class="fa-solid fa-pills text-base"></i>
+        <span class="text-[10px] mt-1 font-medium">25 FRIDs</span>
+      </button>
+
+      <button onclick="switchMobileTab('checker')" id="mtab-checker" class="flex flex-col items-center justify-center w-14 h-full text-slate-400 hover:text-teal-600 transition">
+        <i class="fa-solid fa-shuffle text-base"></i>
+        <span class="text-[10px] mt-1 font-medium">Conflicts</span>
+      </button>
+
+      <button onclick="switchMobileTab('archive')" id="mtab-archive" class="flex flex-col items-center justify-center w-14 h-full text-slate-400 hover:text-teal-600 transition">
+        <i class="fa-solid fa-database text-base"></i>
+        <span class="text-[10px] mt-1 font-medium">History</span>
+      </button>
+
+    </nav>
+
+    <!-- Native Home Bar Indicator -->
+    <div class="absolute bottom-1 inset-x-0 flex justify-center pointer-events-none z-50">
+      <div class="w-32 h-1 bg-slate-900/30 rounded-full"></div>
+    </div>
+
+    <!-- ============================================================== -->
+    <!-- BOTTOM SHEET 1: CAMERA OCR SIMULATOR                           -->
+    <!-- ============================================================== -->
+    <div id="m-ocr-sheet" class="absolute inset-0 z-50 bg-black/80 backdrop-blur-sm flex flex-col justify-end hidden">
+      <div class="bg-slate-900 text-white rounded-t-3xl p-5 border-t border-slate-700 sheet-up space-y-4 max-h-[85vh] overflow-y-auto">
+        <div class="w-12 h-1.5 bg-slate-700 rounded-full mx-auto mb-1"></div>
+        <div class="flex items-center justify-between">
+          <div class="font-bold text-sm flex items-center gap-2">
+            <i class="fa-solid fa-camera text-teal-400"></i> Mobile Prescription OCR Scanner
+          </div>
+          <button onclick="closeMobileOCRSheet()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+        </div>
+
+        <!-- Simulated Camera Viewfinder -->
+        <div class="relative w-full h-52 bg-slate-800 rounded-2xl border-2 border-dashed border-teal-500/60 overflow-hidden flex flex-col items-center justify-center p-4 text-center">
+          <!-- Laser scanning line -->
+          <div class="absolute inset-x-0 h-0.5 bg-gradient-to-r from-transparent via-teal-400 to-transparent shadow-lg shadow-teal-500 laser-line"></div>
+          
+          <i class="fa-solid fa-file-invoice text-4xl text-slate-600 mb-2"></i>
+          <span class="text-xs font-semibold text-slate-300">Align doctor's handwriting inside frame</span>
+          <span class="text-[10px] text-slate-500 mt-1">Supports Indian clinic prescriptions & OPD cards</span>
+        </div>
+
+        <button onclick="triggerMobileOCRProcess()" class="w-full py-3 bg-teal-500 hover:bg-teal-400 text-slate-950 font-extrabold text-xs rounded-xl shadow-lg transition flex items-center justify-center gap-2">
+          <i class="fa-solid fa-shutter-glass"></i> Capture & Extract Drugs
+        </button>
+      </div>
+    </div>
+
+    <!-- ============================================================== -->
+    <!-- BOTTOM SHEET 2: VOICE DICTATION SIMULATOR                      -->
+    <!-- ============================================================== -->
+    <div id="m-voice-sheet" class="absolute inset-0 z-50 bg-black/80 backdrop-blur-sm flex flex-col justify-end hidden">
+      <div class="bg-slate-900 text-white rounded-t-3xl p-6 border-t border-slate-700 sheet-up text-center space-y-5">
+        <div class="w-12 h-1.5 bg-slate-700 rounded-full mx-auto mb-1"></div>
+        <div class="flex items-center justify-between text-left">
+          <div class="font-bold text-sm text-rose-400 flex items-center gap-2">
+            <i class="fa-solid fa-microphone-lines"></i> Ambient Medical Voice Dictation
+          </div>
+          <button onclick="closeMobileVoiceSheet()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+        </div>
+
+        <!-- Animated Voice Waveform Bars -->
+        <div class="flex items-center justify-center gap-2 h-14">
+          <div class="w-1.5 bg-rose-500 rounded-full wave-bar-1"></div>
+          <div class="w-1.5 bg-rose-400 rounded-full wave-bar-2"></div>
+          <div class="w-1.5 bg-rose-500 rounded-full wave-bar-3"></div>
+          <div class="w-1.5 bg-rose-300 rounded-full wave-bar-4"></div>
+          <div class="w-1.5 bg-rose-500 rounded-full wave-bar-5"></div>
+        </div>
+
+        <div>
+          <div class="text-xs font-bold text-slate-200">Listening in Real-Time...</div>
+          <p class="text-[11px] text-slate-400 mt-1">Dictate: "Patient takes Pan-D once daily, Glimepiride, and Amlodipine"</p>
+        </div>
+
+        <button onclick="triggerMobileVoiceProcess()" class="w-full py-3 bg-rose-600 hover:bg-rose-500 text-white font-extrabold text-xs rounded-xl shadow-lg transition">
+          <i class="fa-solid fa-stop mr-1"></i> Finish Dictation & Audit
+        </button>
+      </div>
+    </div>
+
+    <!-- ============================================================== -->
+    <!-- BOTTOM SHEET 3: CLASS DETAIL (SHOWING ALL DRUGS IN THAT CLASS) -->
+    <!-- ============================================================== -->
+    <div id="m-class-sheet" class="absolute inset-0 z-50 bg-black/80 backdrop-blur-sm flex flex-col justify-end hidden">
+      <div class="bg-white rounded-t-3xl p-5 sheet-up flex flex-col max-h-[88vh] space-y-3.5 overflow-hidden">
+        <div class="w-12 h-1.5 bg-slate-300 rounded-full mx-auto"></div>
+        
+        <div class="flex items-start justify-between border-b border-slate-100 pb-3">
+          <div>
+            <div class="flex items-center gap-1.5 mb-1">
+              <span id="mc-risk" class="text-[9px] font-bold px-2 py-0.5 rounded bg-rose-100 text-rose-800 uppercase">DIRECT HIGH</span>
+              <span id="mc-count" class="text-[10px] font-mono font-bold text-teal-700 bg-teal-50 px-2 py-0.5 rounded">20 Drugs</span>
+            </div>
+            <h3 id="mc-title" class="text-base font-extrabold text-slate-900">Class Name</h3>
+          </div>
+          <button onclick="closeMobileClassSheet()" class="w-8 h-8 rounded-full bg-slate-100 text-slate-600 flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+
+        <div class="flex-1 overflow-y-auto space-y-3 mobile-scroll pr-1">
+          <!-- Fall Mechanism -->
+          <div class="p-3 bg-amber-50 rounded-xl text-amber-950 text-[11px] leading-relaxed border border-amber-200">
+            <strong>Fall Mechanism:</strong> <span id="mc-mechanism">...</span>
+          </div>
+
+          <!-- All Generic Drugs List -->
+          <div>
+            <div class="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">Every Drug in this Class:</div>
+            <div id="mc-drugs-list" class="space-y-2"></div>
+          </div>
+        </div>
+
+        <button onclick="closeMobileClassSheet()" class="w-full py-2.5 bg-slate-900 text-white font-bold text-xs rounded-xl">
+          Close Drug Inspector
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MOBILE SCRIPT & CLINICAL LOGIC             -->
+  <!-- ========================================== -->
+  <script>
+    // Update mobile clock
+    function updateClock() {
+      const now = new Date();
+      const hours = String(now.getHours()).padStart(2, '0');
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      const el = document.getElementById('mobile-clock');
+      if (el) el.innerText = `${hours}:${minutes}`;
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    function dismissMobileSplash() {
+      const splash = document.getElementById('m-splash');
+      if (splash) {
+        splash.classList.add('opacity-0', 'transition-opacity', 'duration-300');
+        setTimeout(() => splash.classList.add('hidden'), 300);
+      }
+    }
+
+    // ------------------------------------------
+    // TAB SWITCHING (NATIVE MOBILE NAVIGATION)
+    // ------------------------------------------
+    function switchMobileTab(tabKey) {
+      const tabs = ['home', 'audit', 'frids', 'checker', 'archive'];
+      tabs.forEach(t => {
+        const content = document.getElementById('tab-content-' + t);
+        const btn = document.getElementById('mtab-' + t);
+        if (content) content.classList.add('hidden');
+        if (btn) {
+          btn.classList.remove('text-teal-600');
+          btn.classList.add('text-slate-400');
+        }
+      });
+
+      const activeContent = document.getElementById('tab-content-' + tabKey);
+      const activeBtn = document.getElementById('mtab-' + tabKey);
+      if (activeContent) activeContent.classList.remove('hidden');
+      if (activeBtn) {
+        activeBtn.classList.add('text-teal-600');
+        activeBtn.classList.remove('text-slate-400');
+      }
+
+      // Re-scroll to top
+      document.getElementById('mobile-viewport').scrollTop = 0;
+    }
+
+    // ------------------------------------------
+    // OCR & VOICE BOTTOM SHEETS
+    // ------------------------------------------
+    function openMobileCameraSheet() {
+      document.getElementById('m-ocr-sheet').classList.remove('hidden');
+    }
+    function closeMobileOCRSheet() {
+      document.getElementById('m-ocr-sheet').classList.add('hidden');
+    }
+    function triggerMobileOCRProcess() {
+      closeMobileOCRSheet();
+      document.getElementById('m-rx-text').value = 
+`Pantocid-L 1 OD (before food)
+Glim-2 BD
+Chlorthalidone 12.5mg OD
+Alprazolam 0.5mg HS`;
+      runMobileAudit();
+    }
+
+    function openMobileVoiceSheet() {
+      document.getElementById('m-voice-sheet').classList.remove('hidden');
+    }
+    function closeMobileVoiceSheet() {
+      document.getElementById('m-voice-sheet').classList.add('hidden');
+    }
+    function triggerMobileVoiceProcess() {
+      closeMobileVoiceSheet();
+      document.getElementById('m-rx-text').value = 
+`Pan-L once daily
+Glimepiride 2mg
+Telmisartan 40mg
+Tramadol 50mg SOS`;
+      runMobileAudit();
+    }
+
+    // ------------------------------------------
+    // LOAD DEMO PATIENT
+    // ------------------------------------------
+    function loadDemoMobilePatient() {
+      switchMobileTab('audit');
+      document.getElementById('m-rx-text').value = 
+`Pan-L 1 cap OD (morning)
+Glimepiride 2mg BD
+Chlorthalidone 12.5mg OD
+Alprazolam 0.5mg HS
+Tramadol 50mg for knee pain`;
+      runMobileAudit();
+    }
+
+    // ------------------------------------------
+    // RUN MOBILE AUDIT PIPELINE
+    // ------------------------------------------
+    let currentMobileEncounter = null;
+
+        function runMobileAudit() {
+      const raw = document.getElementById('m-rx-text').value.trim();
+      if (!raw) {
+        alert("Please enter medicines or use OCR/Voice!");
+        return;
+      }
+
+      document.getElementById('m-results-box').classList.remove('hidden');
+      const lines = raw.split('\n').filter(l => l.trim().length > 0);
+      const harmsContainer = document.getElementById('m-detailed-harms-list');
+      const taperContainer = document.getElementById('m-taper-list');
+      harmsContainer.innerHTML = '';
+      taperContainer.innerHTML = '';
+
+      let score = 2; // Baseline geriatric vulnerability
+      let flaggedItems = [];
+      let harms = [];
+
+      const supine = parseInt(document.getElementById('m-supine').value.split('/')[0]) || 142;
+      const standing = parseInt(document.getElementById('m-standing').value.split('/')[0]) || 114;
+      const drop = supine - standing;
+      if (drop >= 20) score += 2;
+
+      lines.forEach(l => {
+        const low = l.toLowerCase();
+        
+        // Conflict 1: Glimepiride + CKD 3b
+        if (low.includes('glimepiride') || low.includes('glim-2')) {
+          score += 2;
+          harms.push({
+            drug: "Glimepiride 2mg",
+            category: "Drug-to-Disease & Lab Conflict (CKD 3b + Tight HbA1c)",
+            color: "rose",
+            mechanism: "Impaired Renal Clearance + Neuroglycopenia",
+            explanation: "Active metabolites of Glimepiride are cleared 100% by the kidneys. With patient's eGFR at 31 mL/min, drug half-life doubles, causing prolonged accumulation. Combined with an over-treated HbA1c of 6.2%, patient suffers silent nocturnal neuroglycopenia, morning dizziness, and catastrophic hip fractures.",
+            action: "Deprescribe Glimepiride -> Substitute with Linagliptin 5mg OD (DPP-4i requires no renal dose titration and carries zero intrinsic hypoglycemia risk)."
+          });
+          flaggedItems.push({
+            name: "Glimepiride 2mg (Sulphonylurea)",
+            action: "Switch to DPP-4i (Linagliptin 5mg)",
+            w1: "Stop Glimepiride -> Start Linagliptin 5mg",
+            w2: "Linagliptin 5mg OD",
+            w3: "Linagliptin 5mg OD",
+            w4: "Linagliptin 5mg OD (Stable)"
+          });
+        }
+
+        // Conflict 2: Chlorthalidone + Postural Drop + Low Sodium
+        if (low.includes('chlorthalidone')) {
+          score += 2;
+          harms.push({
+            drug: "Chlorthalidone 12.5mg",
+            category: "Drug-to-Vitals & Electrolyte Conflict (Postural Drop 28 mmHg + Na+ 130)",
+            color: "rose",
+            mechanism: "Intravascular Volume Contraction & Renal Sodium Wasting",
+            explanation: "Chlorthalidone has an ultra-long 50-hour half-life. It is actively driving patient's serum sodium down to 130 mEq/L (hyponatremic ataxia) and directly causing the 28 mmHg blood pressure plunge upon standing (142 -> 114 mmHg), leading to cerebral hypoperfusion and blackouts.",
+            action: "Discontinue Chlorthalidone completely. Rely on single-agent Telmisartan; relax blood pressure target to 135-145 mmHg."
+          });
+          flaggedItems.push({
+            name: "Chlorthalidone 12.5mg (Thiazide Diuretic)",
+            action: "Discontinue Immediately",
+            w1: "Cease Chlorthalidone",
+            w2: "Monitor Standing BP & Na+",
+            w3: "Target SBP 135-145 mmHg",
+            w4: "Single ARB Maintenance"
+          });
+        }
+
+        // Conflict 3: Pan-L (Levosulpiride FDC)
+        if (low.includes('pan-l') || low.includes('pantocid-l') || low.includes('levosulpiride')) {
+          score += 2;
+          harms.push({
+            drug: "Pan-L (Pantoprazole 40mg + Levosulpiride 75mg)",
+            category: "High-Risk Indian FDC / Drug-Induced Parkinsonism (DIP)",
+            color: "purple",
+            mechanism: "Central Striatal Dopamine D2 Blockade",
+            explanation: "Levosulpiride crosses the blood-brain barrier and blocks dopamine D2 receptors in the basal ganglia. In patients over 70, this reliably triggers severe Drug-Induced Parkinsonism (DIP): hand tremors, cogwheel rigidity, masked facies, and shuffling gait freezing, routinely misdiagnosed as true Parkinson's disease.",
+            action: "Break the FDC immediately. Discontinue Levosulpiride; switch to pure Pantoprazole 20mg once daily for 2 weeks, then step down to PRN antacids."
+          });
+          flaggedItems.push({
+            name: "Pan-L (Levosulpiride Component)",
+            action: "Immediate Cessation -> Plain PPI",
+            w1: "Stop Pan-L -> Start Pantoprazole 20mg",
+            w2: "Pantoprazole 20mg OD",
+            w3: "Pantoprazole 20mg Alt Days",
+            w4: "PRN Antacid Only"
+          });
+        }
+
+        // Conflict 4: Alprazolam + Tramadol
+        if (low.includes('alprazolam')) {
+          score += 1;
+          harms.push({
+            drug: "Alprazolam 0.5mg",
+            category: "Drug-to-Drug CNS Synergism & Ataxia",
+            color: "amber",
+            mechanism: "GABA-A Allosteric Cerebellar Suppression",
+            explanation: "Benzodiazepines blunt vestibular and cerebellar balance correction. When co-prescribed with opioids, it destroys protective extension reflexes during a slip, leading to high-impact femoral neck and skull fractures.",
+            action: "Gradual hyperbolic reduction: cut by 25% to 50% every 2 weeks to avoid rebound insomnia or autonomic anxiety. Reinforce CBT-I sleep hygiene."
+          });
+          flaggedItems.push({
+            name: "Alprazolam 0.5mg (Benzodiazepine)",
+            action: "Stepwise 25-50% Reduction",
+            w1: "0.25mg HS (Halve dose)",
+            w2: "0.25mg HS",
+            w3: "0.125mg HS (Alt Days)",
+            w4: "Discontinue / Sleep Hygiene"
+          });
+        }
+
+        if (low.includes('tramadol')) {
+          score += 1;
+          harms.push({
+            drug: "Tramadol 50mg",
+            category: "Mu-Opioid CNS Sedation & Delayed Reflexes",
+            color: "amber",
+            mechanism: "Central Inhibition + Serotonin/Norepinephrine Reuptake",
+            explanation: "Causes dizziness, nausea, and impaired psychomotor alertness. In older adults with knee osteoarthritis, topical therapy provides equal pain relief without central fall risk.",
+            action: "Discontinue oral Tramadol. Substitute with topical Diclofenac 1.16% gel applied 3-4 times daily plus supervised quadriceps strengthening."
+          });
+          flaggedItems.push({
+            name: "Tramadol 50mg (Opioid Analgesic)",
+            action: "Substitute with Topical NSAID",
+            w1: "Discontinue Tramadol",
+            w2: "Topical Diclofenac Gel TID",
+            w3: "Physical Therapy / Ice-Heat",
+            w4: "Scheduled Paracetamol PRN"
+          });
+        }
+      });
+
+      score = Math.min(score, 10);
+      document.getElementById('m-score-val').innerText = score;
+      document.getElementById('m-score-status').innerText = score >= 6 ? "HIGH FALL RISK (Action Required)" : "MODERATE RISK";
+
+      // Render Deep Harms List
+      harms.forEach((h, idx) => {
+        const borderCol = h.color === 'rose' ? 'border-rose-200 bg-rose-50/70 text-rose-950' : (h.color === 'purple' ? 'border-purple-200 bg-purple-50/70 text-purple-950' : 'border-amber-200 bg-amber-50/70 text-amber-950');
+        const badgeCol = h.color === 'rose' ? 'bg-rose-200 text-rose-900' : (h.color === 'purple' ? 'bg-purple-200 text-purple-900' : 'bg-amber-200 text-amber-900');
+        
+        harmsContainer.innerHTML += `
+          <div class="p-3.5 rounded-2xl border ${borderCol} space-y-2">
+            <div class="flex items-start justify-between gap-2">
+              <span class="font-extrabold text-xs text-slate-900">${idx + 1}. ${h.drug}</span>
+              <span class="text-[9px] font-bold px-2 py-0.5 rounded ${badgeCol}">${h.mechanism}</span>
+            </div>
+            <div class="text-[10px] font-bold text-slate-700 uppercase tracking-wider">${h.category}</div>
+            <p class="text-[11px] leading-relaxed text-slate-700">
+              ${h.explanation}
+            </p>
+            <div class="p-2 rounded-xl bg-white/90 border border-slate-200 text-[11px] text-teal-800 font-medium">
+              <strong class="text-teal-900">Clinical Recommendation:</strong> ${h.action}
+            </div>
+          </div>`;
+      });
+
+      // Render Tapering Calendar
+      flaggedItems.forEach((f, idx) => {
+        taperContainer.innerHTML += `
+          <div class="p-3 rounded-xl bg-slate-50 border border-slate-200 space-y-1.5">
+            <div class="flex items-center justify-between">
+              <span class="font-extrabold text-slate-900 text-xs">${idx + 1}. ${f.name}</span>
+              <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-teal-100 text-teal-800">${f.action}</span>
+            </div>
+            <div class="grid grid-cols-2 gap-1.5 text-[10px] font-mono text-slate-700 pt-1">
+              <div class="p-1 rounded bg-white border border-slate-200"><strong>Wk 1:</strong> ${f.w1}</div>
+              <div class="p-1 rounded bg-white border border-slate-200"><strong>Wk 2:</strong> ${f.w2}</div>
+              <div class="p-1 rounded bg-white border border-slate-200"><strong>Wk 3:</strong> ${f.w3}</div>
+              <div class="p-1 rounded bg-teal-50 border border-teal-200 text-teal-800 font-bold"><strong>Wk 4:</strong> ${f.w4}</div>
+            </div>
+          </div>`;
+      });
+
+      currentMobileEncounter = {
+        name: "Ramesh Chandra (78y)",
+        score,
+        drugs: flaggedItems.map(f => f.name).join(', '),
+        date: new Date().toLocaleDateString()
+      };
+    }
+
+    function saveMobileEncounter() {
+      if (!currentMobileEncounter) return;
+      let db = JSON.parse(localStorage.getItem('deprescript_mobile_db') || '[]');
+      db.unshift(currentMobileEncounter);
+      localStorage.setItem('deprescript_mobile_db', JSON.stringify(db));
+      alert("Encounter saved to mobile cloud database!");
+      renderMobileDb();
+      switchMobileTab('archive');
+    }
+
+    function renderMobileDb() {
+      let db = JSON.parse(localStorage.getItem('deprescript_mobile_db') || '[]');
+      const container = document.getElementById('m-db-container');
+      const recentList = document.getElementById('m-recent-list');
+      if (!container) return;
+      container.innerHTML = '';
+      if (recentList && db.length > 0) recentList.innerHTML = '';
+
+      if (db.length === 0) {
+        container.innerHTML = '<div class="text-center py-8 text-xs text-slate-400">No saved patient encounters.</div>';
+        return;
+      }
+
+      db.forEach((item, idx) => {
+        const cardHtml = `
+          <div class="p-3 rounded-2xl bg-white border border-slate-200 shadow-sm space-y-1">
+            <div class="flex items-center justify-between">
+              <span class="font-extrabold text-slate-900 text-xs">${item.name}</span>
+              <span class="text-[10px] font-bold px-2 py-0.5 rounded ${item.score >= 6 ? 'bg-rose-100 text-rose-800' : 'bg-amber-100 text-amber-800'}">Score ${item.score}/10</span>
+            </div>
+            <p class="text-[11px] text-slate-500 truncate">${item.drugs}</p>
+            <div class="text-[10px] text-slate-400 font-mono">${item.date}</div>
+          </div>`;
+        container.innerHTML += cardHtml;
+        if (recentList && idx < 3) recentList.innerHTML += cardHtml;
+      });
+    }
+
+    function clearMobileDb() {
+      localStorage.removeItem('deprescript_mobile_db');
+      renderMobileDb();
+    }
+
+    // ------------------------------------------
+    // ALL 25 FRIDS DIRECTORY & DRILL-DOWN LOGIC
+    // ------------------------------------------
+    // Pull from the comprehensive 25 classes
+    const MOBILE_FRIDS = [
+      { id: 1, name: "Antihypertensives (Non-Diuretic)", count: 20, risk: "DIRECT HIGH", mech: "Impairs baroreceptor reflex; postural and postprandial drops.", drugs: ["Telmisartan (Telma)", "Ramipril (Cardace)", "Amlodipine (Stamlo)", "Cilnidipine (Cilacar)", "Sacubitril+Valsartan", "Enalapril (Envas)", "Lisinopril", "Perindopril", "Olmesartan", "Losartan", "Nifedipine", "Diltiazem", "Verapamil", "Captopril", "Fosinopril", "Quinapril", "Trandolapril", "Candesartan", "Irbesartan", "Felodipine"] },
+      { id: 2, name: "Centrally Acting Antihypertensives", count: 5, risk: "DIRECT HIGH", mech: "Central sympatholysis causes severe sedation and postural pooling.", drugs: ["Clonidine (Arkamin)", "Methyldopa (Emdopa)", "Moxonidine (Moxovas)", "Hydralazine", "Minoxidil"] },
+      { id: 3, name: "Diuretics", count: 9, risk: "DIRECT HIGH", mech: "Dehydration, volume depletion, severe hyponatraemia, nocturia rushes.", drugs: ["Torsemide (Dytor)", "Furosemide (Lasix)", "Chlorthalidone (Hythalton)", "Hydrochlorothiazide", "Indapamide", "Spironolactone", "Eplerenone", "Finerenone", "Amiloride"] },
+      { id: 4, name: "Beta-Adrenoceptor Blockers", count: 7, risk: "DIRECT MODERATE", mech: "Sinus bradycardia (<60 bpm), blunted baroreflex response, fatigue.", drugs: ["Metoprolol (Betaloc)", "Atenolol (Aten)", "Bisoprolol (Concor)", "Carvedilol (Carca)", "Nebivolol (Nebicard)", "Propranolol (Ciplar)", "Labetalol (Labebet)"] },
+      { id: 5, name: "Organic Nitrates", count: 3, risk: "DIRECT HIGH", mech: "Venodilation causes massive lower-limb blood pooling and syncope.", drugs: ["Glyceryl Trinitrate (GTN)", "Isosorbide Mononitrate (Monotrate)", "Isosorbide Dinitrate (Sorbitrate)"] },
+      { id: 6, name: "Antiarrhythmics & Digoxin", count: 3, risk: "DIRECT HIGH", mech: "Renal accumulation causes heart blocks, bradyarrhythmias, and fainting.", drugs: ["Digoxin (Lanoxin)", "Sotalol (Sotagard)", "Amiodarone (Cordarone)"] },
+      { id: 7, name: "Peripheral Alpha-1 Blockers", count: 4, risk: "DIRECT HIGH", mech: "Arteriolar dilation causes severe first-dose postural syncope.", drugs: ["Prazosin (Minipress-XL)", "Tamsulosin (Urimax)", "Silodosin (Silodal)", "Alfuzosin (Alfusin)"] },
+      { id: 8, name: "Antipsychotics (Neuroleptics)", count: 19, risk: "DIRECT CRITICAL", mech: "Heavy sedation, postural drops, dopamine D2 Parkinsonian gait rigidity.", drugs: ["Haloperidol (Serenace)", "Quetiapine (Seroquin)", "Olanzapine (Oleanz)", "Risperidone (Sizodon)", "Aripiprazole", "Chlorpromazine", "Amisulpride", "Clozapine", "Trifluoperazine", "Flupentixol", "Paliperidone", "Zuclopenthixol", "Asenapine", "Brexpiprazole", "Cariprazine", "Droperidol", "Lurasidone", "Periciazine", "Ziprasidone"] },
+      { id: 9, name: "Benzodiazepines", count: 6, risk: "DIRECT CRITICAL", mech: "GABA-A activation causes cerebellar ataxia, delayed reflexes, and hip fractures.", drugs: ["Alprazolam (Alprax, Restyl)", "Clonazepam (Zapiz)", "Diazepam (Calmpose)", "Lorazepam (Ativan)", "Clobazam (Frisium)", "Oxazepam"] },
+      { id: 10, name: "Z-Drugs & Hypnotics", count: 6, risk: "DIRECT CRITICAL", mech: "Morning hangover sedation, nocturnal disorientation, sleepwalking falls.", drugs: ["Zolpidem (Nitrest)", "Zopiclone (Zopicon)", "Eszopiclone", "Nitrazepam (Nitrosun)", "Flunitrazepam", "Midazolam"] },
+      { id: 11, name: "Antidepressants (SSRI/SNRI/TCA)", count: 23, risk: "DIRECT HIGH", mech: "TCAs cause orthostasis; SSRIs cause SIADH hyponatraemia (<130 mEq/L).", drugs: ["Amitriptyline (Tryptomer)", "Escitalopram (Nexito)", "Sertraline (Zosert)", "Duloxetine (Duzela)", "Venlafaxine", "Paroxetine", "Fluoxetine", "Mirtazapine", "Citalopram", "Fluvoxamine", "Desvenlafaxine", "Nortriptyline", "Imipramine", "Clomipramine", "Doxepin", "Dosulepin", "Vortioxetine", "Agomelatine", "Mianserin", "Reboxetine", "Phenelzine", "Tranylcypromine", "Moclobemide"] },
+      { id: 12, name: "Opioid Analgesics", count: 12, risk: "DIRECT HIGH", mech: "Profound CNS sedation, blunted protective extension reflexes, dizziness.", drugs: ["Tramadol (Ultracet)", "Tapentadol (Tepenta)", "Morphine", "Buprenorphine Patch", "Codeine", "Fentanyl", "Methadone", "Hydromorphone", "Oxycodone", "Alfentanil", "Remifentanil", "Pethidine"] },
+      { id: 13, name: "Gabapentinoids", count: 2, risk: "DIRECT HIGH", mech: "Inhibits calcium alpha-2-delta subunit -> somnolence and broad-based ataxia.", drugs: ["Pregabalin (Pregalin, Maxgalin)", "Gabapentin (Gabapin)"] },
+      { id: 14, name: "Antiepileptics / Anticonvulsants", count: 20, risk: "DIRECT HIGH", mech: "Neuronal membrane suppression causes diplopia, nystagmus, and unsteadiness.", drugs: ["Sodium Valproate (Encorate)", "Phenytoin (Eptoin)", "Carbamazepine (Tegrital)", "Oxcarbazepine (Oxetol)", "Levetiracetam (Levipil)", "Lamotrigine", "Lacosamide", "Phenobarbital", "Topiramate", "Primidone", "Ethosuximide", "Brivaracetam", "Cannabidiol", "Perampanel", "Rufinamide", "Stiripentol", "Sulthiame", "Tiagabine", "Vigabatrin", "Zonisamide"] },
+      { id: 15, name: "Sedating Antiemetics / Vertigo", count: 4, risk: "DIRECT HIGH", mech: "Dopamine D2 & H1 blockade causes drug-induced parkinsonism and ataxia.", drugs: ["Prochlorperazine (Stemetil)", "Cinnarizine (Stugeron)", "Flunarizine (Sibelium)", "Metoclopramide (Reglan)"] },
+      { id: 16, name: "Genitourinary Anticholinergics", count: 5, risk: "DIRECT HIGH", mech: "Muscarinic blockade causes acute delirium, accommodation paresis (blurred vision).", drugs: ["Oxybutynin (Ditropan)", "Tolterodine (Roliten)", "Solifenacin (Solicept)", "Darifenacin", "Flavoxate (Urispas)"] },
+      { id: 17, name: "Hypoglycaemic Diabetes Agents", count: 6, risk: "DIRECT CRITICAL", mech: "Neuroglycopenic hypoglycaemia (<70 mg/dL) causes acute syncope and falls.", drugs: ["Glimepiride (Amaryl)", "Gliclazide (Diamicron)", "Glibenclamide (Daonil)", "Glipizide", "Human Mixtard 30/70", "Basal / Rapid Insulins"] },
+      { id: 18, name: "Dopaminergic Antiparkinsonians", count: 3, risk: "DIRECT HIGH", mech: "Orthostatic hypotension in > 50% of users, dyskinesias, daytime sleep attacks.", drugs: ["Levodopa+Carbidopa (Syndopa)", "Pramipexole (Pramipex)", "Ropinirole (Ropark)"] },
+      { id: 19, name: "Proton-Pump Inhibitors (PPIs)", count: 5, risk: "INDIRECT HIDDEN", mech: "Hypomagnesaemia (tremors), B12 sensory ataxia, and FDC Levosulpiride DIP.", drugs: ["Pantoprazole (Pan-L, Pan-D)", "Rabeprazole (Razo-L)", "Omeprazole (Omez)", "Esomeprazole", "Lansoprazole"] },
+      { id: 20, name: "SGLT2 Inhibitors ('Gliflozins')", count: 3, risk: "INDIRECT HIDDEN", mech: "Osmotic diuresis volume depletion, orthostasis, and sarcopenic muscle loss.", drugs: ["Dapagliflozin (Forxiga)", "Empagliflozin (Jardiance)", "Canagliflozin (Invokana)"] },
+      { id: 21, name: "Skeletal Muscle Relaxants", count: 4, risk: "INDIRECT HIGH", mech: "Central flaccidity; patient loses reflex leg tone needed to recover from a trip.", drugs: ["Thiocolchicoside (Myoril)", "Tizanidine (Sirdalud)", "Baclofen (Lioresal)", "Chlorzoxazone (Mobizox)"] },
+      { id: 22, name: "Systemic Corticosteroids", count: 3, risk: "INDIRECT CHRONIC", mech: "Steroid myopathy (quadriceps wasting); collapse when rising from low seating.", drugs: ["Prednisolone (Wysolone)", "Methylprednisolone (Medrol)", "Dexamethasone (Dexona)"] },
+      { id: 23, name: "GLP-1 Receptor Agonists", count: 3, risk: "INDIRECT HIDDEN", mech: "Rapid lean skeletal muscle wasting (sarcopenia) and dehydration.", drugs: ["Semaglutide (Ozempic, Rybelsus)", "Liraglutide (Victoza)", "Dulaglutide (Trulicity)"] },
+      { id: 24, name: "Ophthalmic Beta-Blockers", count: 3, risk: "INDIRECT HIDDEN", mech: "Nasolacrimal absorption causes severe sinus bradycardia (<50 bpm) and syncope.", drugs: ["Timolol Drops (Timolet)", "Betaxolol Drops (Betoptic)", "Pilocarpine (destroys night vision)"] },
+      { id: 25, name: "PDE-5 Inhibitors & Misc", count: 3, risk: "INDIRECT HIDDEN", mech: "Profound arterial collapse with nitrates; Teriparatide post-dose orthostasis.", drugs: ["Sildenafil (Silagra)", "Tadalafil (Megalis)", "Teriparatide (Forteo)"] }
+    ];
+
+    function renderMobileFRIDs() {
+      const list = document.getElementById('m-frids-list');
+      if (!list) return;
+      list.innerHTML = '';
+      MOBILE_FRIDs.forEach(c => {
+        list.innerHTML += `
+          <div onclick="openMobileClassSheet(${c.id})" class="p-3 bg-white rounded-2xl border border-slate-200/90 shadow-sm active:scale-98 transition cursor-pointer space-y-1.5">
+            <div class="flex items-center justify-between">
+              <span class="text-[9px] font-bold px-2 py-0.5 rounded ${c.risk.includes('CRITICAL') || c.risk.includes('HIGH') ? 'bg-rose-100 text-rose-800' : 'bg-blue-100 text-blue-800'}">${c.risk}</span>
+              <span class="text-[10px] font-mono font-bold text-teal-700 bg-teal-50 px-2 py-0.5 rounded">${c.count} Drugs</span>
+            </div>
+            <div class="font-extrabold text-xs text-slate-900">${c.name}</div>
+            <p class="text-[11px] text-slate-500 line-clamp-1">${c.mech}</p>
+            <div class="text-[10px] text-teal-600 font-bold flex items-center gap-1 pt-0.5">
+              <span>View all ${c.count} chemical entities</span> &rarr;
+            </div>
+          </div>`;
+      });
+    }
+
+    function filterMobileFRIDs() {
+      const q = document.getElementById('m-frid-search').value.toLowerCase();
+      const list = document.getElementById('m-frids-list');
+      list.innerHTML = '';
+
+      MOBILE_FRIDs.forEach(c => {
+        const classMatch = c.name.toLowerCase().includes(q);
+        const drugMatch = c.drugs.some(d => d.toLowerCase().includes(q));
+        if (classMatch || drugMatch) {
+          list.innerHTML += `
+            <div onclick="openMobileClassSheet(${c.id})" class="p-3 bg-white rounded-2xl border border-slate-200 shadow-sm active:scale-98 transition cursor-pointer space-y-1.5">
+              <div class="flex items-center justify-between">
+                <span class="text-[9px] font-bold px-2 py-0.5 rounded ${c.risk.includes('CRITICAL') || c.risk.includes('HIGH') ? 'bg-rose-100 text-rose-800' : 'bg-blue-100 text-blue-800'}">${c.risk}</span>
+                <span class="text-[10px] font-mono font-bold text-teal-700 bg-teal-50 px-2 py-0.5 rounded">${c.count} Drugs</span>
+              </div>
+              <div class="font-extrabold text-xs text-slate-900">${c.name}</div>
+              <p class="text-[11px] text-slate-500 line-clamp-1">${c.mech}</p>
+              <div class="text-[10px] text-teal-600 font-bold flex items-center gap-1 pt-0.5">
+                <span>View all ${c.count} chemical entities</span> &rarr;
+              </div>
+            </div>`;
+        }
+      });
+    }
+
+    function openMobileClassSheet(id) {
+      const c = MOBILE_FRIDs.find(item => item.id === id);
+      if (!c) return;
+
+      document.getElementById('mc-title').innerText = c.name;
+      document.getElementById('mc-risk').innerText = c.risk;
+      document.getElementById('mc-count').innerText = `${c.drugs.length} Drugs`;
+      document.getElementById('mc-mechanism').innerText = c.mech;
+
+      const container = document.getElementById('mc-drugs-list');
+      container.innerHTML = '';
+      c.drugs.forEach((d, idx) => {
+        container.innerHTML += `
+          <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-200/80 flex items-center justify-between text-xs">
+            <span class="font-bold text-slate-800">${idx + 1}. ${d}</span>
+            <i class="fa-solid fa-circle-info text-teal-600 text-xs"></i>
+          </div>`;
+      });
+
+      document.getElementById('m-class-sheet').classList.remove('hidden');
+    }
+
+    function closeMobileClassSheet() {
+      document.getElementById('m-class-sheet').classList.add('hidden');
+    }
+
+    // ------------------------------------------
+    // INTERACTIONS CHECKER
+    // ------------------------------------------
+    const M_CHECK_MEDS = [
+      "Tramadol (Opioid)", "Alprazolam (Benzodiazepine)", "Chlorthalidone (Thiazide)",
+      "Escitalopram (SSRI)", "Telmisartan (ARB)", "Tata Salt Lite (High-K Low-Na)",
+      "Pan-L (Levosulpiride FDC)", "Glimepiride (Sulphonylurea)"
+    ];
+
+    function renderMobileCheckOptions() {
+      const c = document.getElementById('m-check-options');
+      if (!c) return;
+      c.innerHTML = '';
+      M_CHECK_MEDS.forEach(m => {
+        c.innerHTML += `
+          <label class="flex items-center gap-2 p-2 rounded-xl bg-slate-50 border border-slate-200 cursor-pointer">
+            <input type="checkbox" value="${m}" class="rounded text-purple-600">
+            <span class="text-xs font-medium text-slate-800">${m}</span>
+          </label>`;
+      });
+    }
+
+    function runMobileInteractionsCheck() {
+      const checked = Array.from(document.querySelectorAll('#m-check-options input:checked')).map(i => i.value);
+      const out = document.getElementById('m-interaction-output');
+      out.classList.remove('hidden');
+      out.innerHTML = '';
+
+      if (checked.length < 2) {
+        out.innerHTML = '<div class="p-3 bg-amber-50 text-amber-800 rounded-xl text-xs">Select at least 2 drugs to check interactions.</div>';
+        return;
+      }
+
+      const str = checked.join(' ');
+      let hit = false;
+
+      if (str.includes('Tramadol') && str.includes('Alprazolam')) {
+        hit = true;
+        out.innerHTML += `
+          <div class="p-3 bg-rose-50 border border-rose-200 rounded-xl text-xs space-y-1">
+            <div class="font-bold text-rose-900"><i class="fa-solid fa-skull-crossbones mr-1"></i> Opioid + Benzodiazepine Synergism</div>
+            <div class="text-rose-700">Combined CNS sedation and ataxia multiplies hip fracture risk 4-fold.</div>
+          </div>`;
+      }
+      if (str.includes('Telmisartan') && str.includes('Tata Salt Lite')) {
+        hit = true;
+        out.innerHTML += `
+          <div class="p-3 bg-amber-50 border border-amber-200 rounded-xl text-xs space-y-1">
+            <div class="font-bold text-amber-900"><i class="fa-solid fa-heart-crack mr-1"></i> ARB + Potassium Salt Substitute</div>
+            <div class="text-amber-700">Triggers severe hyperkalemia (K+ > 5.5 mEq/L) and fatal bradycardia.</div>
+          </div>`;
+      }
+      if (str.includes('Pan-L')) {
+        hit = true;
+        out.innerHTML += `
+          <div class="p-3 bg-rose-50 border border-rose-200 rounded-xl text-xs space-y-1">
+            <div class="font-bold text-rose-900"><i class="fa-solid fa-person-falling mr-1"></i> Levosulpiride Dopamine Blockade</div>
+            <div class="text-rose-700">Causes classic Drug-Induced Parkinsonism, gait freezing, and falls.</div>
+          </div>`;
+      }
+
+      if (!hit) {
+        out.innerHTML = '<div class="p-3 bg-emerald-50 text-emerald-800 rounded-xl text-xs">No severe interactions flagged between these selections.</div>';
+      }
+    }
+
+    // Init
+    window.addEventListener('DOMContentLoaded', () => {
+      renderMobileFRIDs();
+      renderMobileCheckOptions();
+      renderMobileDb();
+    });
+  </script>
+</body>
+</html>
